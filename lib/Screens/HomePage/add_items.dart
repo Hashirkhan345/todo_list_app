@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:todo_list_app/auth/core/controllers.dart';
 
-import '../auth/core/models/task.dart';
-import '../utils/app_colors.dart';
-import '../utils/app_data.dart';
-import '../utils/form_validation_form.dart';
-import '../utils/text_styles.dart';
+import '../../core/controller/task_controllers.dart';
+import '../../core/models/task.dart';
+import '../../utils/app_colors.dart';
+
 import 'package:jiffy/jiffy.dart';
+
+import '../../utils/app_data.dart';
+import '../../utils/form_validation_form.dart';
+import '../../utils/text_styles.dart';
 
 class AddItems extends StatefulWidget {
   const AddItems({super.key});

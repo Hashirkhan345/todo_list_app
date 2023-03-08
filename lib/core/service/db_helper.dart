@@ -1,13 +1,11 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart';
 
-import '../auth/core/models/task.dart';
+import '../models/task.dart';
 
 enum QueryType { allTasks, completedTasks, incompleteTasks }
 
@@ -88,7 +86,7 @@ class DatabaseHelper {
 
   Future<Map<String, Object?>?> getLastTodoTask() async {
     Database? db = await this.db;
-    final lastEntry = await db?.rawQuery('SELECT * FROM $todoTable WHERE status = 1 ORDER BY $colId ASC LIMIT 20;');
+    final lastEntry = await db?.rawQuery('SELECT * FROM $todoTable WHERE status = 1 ORDER BY $colId ASC LIMIT 10;');
     if (kDebugMode) {
       print(lastEntry);
     }

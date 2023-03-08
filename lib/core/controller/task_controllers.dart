@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart';
-import 'package:todo_list_app/auth/core/models/task.dart';
+import 'package:todo_list_app/core/models/task.dart';
 
-import '../../servies/db_helper.dart';
+import '../service/db_helper.dart';
+
+
 
 class TasksController {
   final DatabaseHelper databaseHelper = DatabaseHelper.instance;

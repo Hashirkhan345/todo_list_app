@@ -1,10 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:todo_list_app/HomePage/home_page.dart';
 
-import '../utils/app_colors.dart';
-import '../utils/text_styles.dart';
+import '../../utils/app_colors.dart';
+import '../../utils/text_styles.dart';
+import '../HomePage/home_page.dart';
+
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);

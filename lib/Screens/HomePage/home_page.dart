@@ -3,15 +3,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:todo_list_app/HomePage/add_items.dart';
-import 'package:todo_list_app/servies/db_helper.dart';
 
 import 'package:todo_list_app/utils/app_colors.dart';
 
-import '../auth/core/controllers.dart';
-import '../auth/core/models/task.dart';
-import '../utils/app_data.dart';
-import '../utils/text_styles.dart';
+
+import '../../core/controller/task_controllers.dart';
+import '../../core/models/task.dart';
+import '../../core/service/db_helper.dart';
+import '../../utils/app_data.dart';
+import '../../utils/text_styles.dart';
+import 'add_items.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
