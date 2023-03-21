@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:todo_list_app/my_todo/data/model/task.dart';
 
-import '../../core/controller/task_controllers.dart';
-import '../../core/models/task.dart';
-import '../../utils/app_colors.dart';
+import 'package:todo_list_app/utils/app_colors.dart';
+import 'package:todo_list_app/utils/app_data.dart';
+import 'package:todo_list_app/utils/form_validation_form.dart';
+import 'package:todo_list_app/utils/text_styles.dart';
 
-import 'package:jiffy/jiffy.dart';
-
-import '../../utils/app_data.dart';
-import '../../utils/form_validation_form.dart';
-import '../../utils/text_styles.dart';
+import '../../../data/repository/my_todo_repository/list_todo.dart';
 
 class AddItems extends StatefulWidget {
   const AddItems({super.key});
@@ -18,43 +16,20 @@ class AddItems extends StatefulWidget {
 }
 
 class _AddItemsState extends State<AddItems> {
-  DateTime dateTime=DateTime.now();
+  DateTime dateTime = DateTime.now();
+
   // Initial Selected Value
 
   final GlobalKey<FormState> _formKey = GlobalKey();
 
   String dropDownValue = 'Birthday';
 
-
   final TasksController taskController = TasksController();
   final TextEditingController titleC = TextEditingController();
   final TextEditingController descriptionC = TextEditingController();
   final TextEditingController typeC = TextEditingController();
 
-  _submit() async {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
 
-      final task = Task(
-          title: titleC.text,
-          description: descriptionC.text.trim(),
-          dropDownValue: typeC.text.trim(),
-          status: 0,
-        // createdAt: Jiffy(dateTime).fromNow(),
-
-          createdAt: timeAgo(DateTime.now()),
-       // createdAt:   Jiffy(DateTime.now()).fromNow(),// 8 years ago
-         //createdAt:  Jiffy().startOf(Units.HOUR).fromNow(), // 9 minutes ago
-
-      );
-      bool isInserted = await taskController.insertTask(newTask: task);
-
-      /// mounted tell if you are still on current page
-      if (mounted) {
-        Navigator.pop(context, isInserted);
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -155,15 +130,10 @@ class _AddItemsState extends State<AddItems> {
                           underline: Container(
                             color: AppColors.backgroundColor,
                           ),
-
-
                           items: AppData.todoTypes.map((String item) {
-
-
                             return DropdownMenuItem(
                               value: item,
                               child: Text(item),
-
                             );
                           }).toList(),
                           onChanged: (String? newValue) {
@@ -191,9 +161,9 @@ class _AddItemsState extends State<AddItems> {
         ));
   }
 
-  static  String   timeAgo(DateTime fatchedDate) {
+  static String timeAgo(DateTime fetchedDate) {
     DateTime currentDate = DateTime.now();
-    var different = currentDate.difference(fatchedDate);
+    var different = currentDate.difference(fetchedDate);
     if (different.inDays > 365) {
       return "${(different.inDays / 365).floor()} ${(different.inDays / 365).floor() == 1 ? "year" : "years"} ago";
     }
@@ -213,6 +183,30 @@ class _AddItemsState extends State<AddItems> {
       return "${different.inMinutes} ${different.inMinutes == 1 ? "minute" : "minutes"} ago";
     }
     if (different.inMinutes == 0) return 'Just Now';
-    return fatchedDate.toString();
+    return fetchedDate.toString();
+  }
+
+  _submit() async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+
+      final task = Task(
+        title: titleC.text,
+        description: descriptionC.text.trim(),
+        dropDownValue: typeC.text.trim(),
+        status: 0,
+        // createdAt: Jiffy(dateTime).fromNow(),
+
+         createdAt: timeAgo(DateTime.now()),
+        // createdAt:   Jiffy(DateTime.now()).fromNow(),// 8 years ago
+        // createdAt:  Jiffy().startOf(Units.HOUR).fromNow(), // 9 minutes ago
+      );
+      bool isInserted = await taskController.insertTask(newTask: task);
+
+      /// mounted tell if you are still on current page
+      if (mounted) {
+        Navigator.pop(context, isInserted);
+      }
+    }
   }
 }

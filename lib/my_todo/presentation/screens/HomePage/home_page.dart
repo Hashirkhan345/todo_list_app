@@ -4,15 +4,19 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'package:todo_list_app/my_todo/data/enum/query_type.dart';
+import 'package:todo_list_app/my_todo/data/model/task.dart';
+import 'package:todo_list_app/my_todo/data/repository/my_todo_repository/add_todo.dart';
+import 'package:todo_list_app/my_todo/presentation/widgets/challenge_container_widget.dart';
+
 import 'package:todo_list_app/utils/app_colors.dart';
+import 'package:todo_list_app/utils/app_data.dart';
+import 'package:todo_list_app/utils/text_styles.dart';
 
-
-import '../../core/controller/task_controllers.dart';
-import '../../core/models/task.dart';
-import '../../core/service/db_helper.dart';
-import '../../utils/app_data.dart';
-import '../../utils/text_styles.dart';
+import '../../../data/repository/my_todo_repository/list_todo.dart';
 import 'add_items.dart';
+
+
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -22,175 +26,75 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // String dropDownValue = 'Educational';
+  String dropDownValue = 'Educational';
+  final _taskController = TasksController();
 
-  late Future<List<Task>> task;
-  final DatabaseHelper databaseHelper = DatabaseHelper.instance;
-  QueryType queryType = QueryType.incompleteTasks;
-  QueryType listType = QueryType.allTasks;
 
-  void setQueryType({required QueryType query}) {
-    queryType = query;
-    setState(() {});
-  }
-
-  QueryType getQuery() {
-    if (queryType == QueryType.completedTasks) {
-      taskController.getCompletedTasks();
-    } else if (queryType == QueryType.incompleteTasks) {
-      taskController.getIncompleteTasks();
-    } else {
-      taskController.getAllTasks();
-    }
-    return getQuery();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _updateNoteList();
-    _delete(context, DatabaseHelper.instance.colId.length);
-    taskController.databaseHelper.getLastTodoTask();
-  }
-
-  final taskController = TasksController();
-
-  _updateNoteList() {
-    task = taskController.getAllTasks();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.homePageColors,
-      appBar: AppBar(
-        title: const Text(
-          "My Todo",
-          style: TextStyles.subtitle,
-        ),
-        centerTitle: true,
-        backgroundColor: AppColors.homePageColors,
-        elevation: 0,
-        leading: Builder(builder: (context) {
-          return IconButton(
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
-            icon: const Icon(
-              Icons.menu_rounded,
-              color: AppColors.menuColor,
+      appBar: buildAppBar(),
+      drawer: Drawer(
+        backgroundColor: AppColors.backgroundColor,
+        shape:
+            const RoundedRectangleBorder(borderRadius: BorderRadius.only(topRight: Radius.circular(20), bottomRight: Radius.circular(20))),
+        child: ListView(
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                  color: AppColors.splashContainer,
+                  borderRadius: BorderRadius.only(bottomRight: Radius.circular(15), bottomLeft: Radius.circular(15))),
+              child: Center(
+                child: Text(
+                  "My Todo",
+                  style: TextStyles.subtitle1,
+                ),
+              ),
             ),
-          );
-        }),
-        actions: [
-          PopupMenuButton(icon: Icon(Icons.more_vert_sharp,color: AppColors.menuColor,),
-
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                onTap: (){
-                     setState(() {
-                       listType = QueryType.completedTasks;
-                     });
-                },
-                value:'Complete' ,
-
-
-                child: Text(
-                  "Complete",
-                  style: TextStyles.title,
-                ),
+            ListTile(
+              onTap: () {
+                setState(() {
+                  listType = QueryType.completedTasks;
+                  Navigator.pop(context);
+                });
+              },
+              title: const Text(
+                "Completed Tasks",
+                style: TextStyles.title,
               ),
-              PopupMenuItem(
-                onTap: () {
-                  setState(() {
-                    listType = QueryType.incompleteTasks;
-
-                  });
-                },
-                value:'inComplete' ,
-
-                child: Text(
-                  "inComplete ",
-                  style: TextStyles.title,
-                ),
+              trailing: Icon(Icons.arrow_forward_ios_sharp),
+            ),
+            ListTile(
+              onTap: () {
+                setState(() {
+                  listType = QueryType.incompleteTasks;
+                  Navigator.pop(context);
+                });
+              },
+              title: const Text(
+                "inCompleted Tasks",
+                style: TextStyles.title,
               ),
-              PopupMenuItem(
-                onTap: () {
-                  setState(() {
-                    listType = QueryType.allTasks;
-
-                  });
-                },
-                value:'Clear Filter' ,
-                child: Text(
-                  "Clear Filter",
-                  style: TextStyles.title,
-                ),
+              trailing: Icon(Icons.arrow_forward_ios_sharp),
+            ),
+            ListTile(
+              onTap: () {
+                setState(() {
+                  listType = QueryType.allTasks;
+                  Navigator.pop(context);
+                });
+              },
+              title: const Text(
+                "All Tasks",
+                style: TextStyles.title,
               ),
-            ],
-
-          ),
-        ],
+              trailing: Icon(Icons.arrow_forward_ios_sharp),
+            )
+          ],
+        ),
       ),
-      // drawer: Drawer(
-      //   backgroundColor: AppColors.backgroundColor,
-      //   shape:
-      //       const RoundedRectangleBorder(borderRadius: BorderRadius.only(topRight: Radius.circular(20), bottomRight: Radius.circular(20))),
-      //   child: ListView(
-      //     children: [
-      //       const DrawerHeader(
-      //         decoration: BoxDecoration(
-      //             color: AppColors.splashContainer,
-      //             borderRadius: BorderRadius.only(bottomRight: Radius.circular(15), bottomLeft: Radius.circular(15))),
-      //         child: Center(
-      //           child: Text(
-      //             "My Todo",
-      //             style: TextStyles.subtitle1,
-      //           ),
-      //         ),
-      //       ),
-      //       ListTile(
-      //         onTap: () {
-      //           setState(() {
-      //             listType = QueryType.completedTasks;
-      //             Navigator.pop(context);
-      //           });
-      //         },
-      //         title: const Text(
-      //           "Completed Tasks",
-      //           style: TextStyles.title,
-      //         ),
-      //         trailing: Icon(Icons.arrow_forward_ios_sharp),
-      //       ),
-      //       ListTile(
-      //         onTap: () {
-      //           setState(() {
-      //             listType = QueryType.incompleteTasks;
-      //             Navigator.pop(context);
-      //           });
-      //         },
-      //         title: const Text(
-      //           "inCompleted Tasks",
-      //           style: TextStyles.title,
-      //         ),
-      //         trailing: Icon(Icons.arrow_forward_ios_sharp),
-      //       ),
-      //       ListTile(
-      //         onTap: () {
-      //           setState(() {
-      //             listType = QueryType.allTasks;
-      //             Navigator.pop(context);
-      //           });
-      //         },
-      //         title: const Text(
-      //           "All Tasks",
-      //           style: TextStyles.title,
-      //         ),
-      //         trailing: Icon(Icons.arrow_forward_ios_sharp),
-      //       )
-      //     ],
-      //   ),
-      // ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final isInserted = await Navigator.push(context, MaterialPageRoute(builder: (context) => AddItems()));
@@ -226,6 +130,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Column(
         children: [
+          // for completed task container.
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 20),
             child: FutureBuilder<Task?>(
@@ -236,20 +141,21 @@ class _HomePageState extends State<HomePage> {
                   }
                   final lastTask = snapshot.data;
                   if (lastTask == null || listType != QueryType.allTasks) return SizedBox.shrink();
-                  return completedTaskWidget(
-                    lastTask.title,
-                    lastTask.description,
-                    lastTask.createdAt.toString(),
+                  return ChallengeContainer(
+                    description: lastTask.description,
+                    createdAt: lastTask.createdAt.toString(),
+                    title: lastTask.title,
                   );
                 }),
           ),
           SizedBox(
             height: 20,
           ),
+
+          // for remaining tasks
           Expanded(
             child: FutureBuilder<List<Task>>(
               future: taskController.getTasks(listType),
-
               // taskController.getAllTasks(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
@@ -310,48 +216,72 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Container completedTaskWidget(
-    String title,
-    String description,
-      String  createdAt,
-  ) {
-    return Container(
-      padding: const EdgeInsets.only(top: 20),
-      height: 105,
-      width: 325,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: AppColors.halfGreen,
+  AppBar buildAppBar() {
+    return AppBar(
+      title: const Text(
+        "My Todo",
+        style: TextStyles.subtitle,
       ),
-      child: ListTile(
-          leading: Column(
-            children: [
-              Icon(
-                Icons.check_circle,
-                size: 30,
-                color: AppColors.green,
-              ),
-            ],
+      centerTitle: true,
+      backgroundColor: AppColors.homePageColors,
+      elevation: 0,
+      leading: Builder(builder: (context) {
+        return IconButton(
+          onPressed: () {
+            Scaffold.of(context).openDrawer();
+          },
+          icon: const Icon(
+            Icons.menu_rounded,
+            color: AppColors.menuColor,
           ),
-          title: Text(
-            title,
-            style: TextStyles.title,
+        );
+      }),
+      actions: [
+        PopupMenuButton(
+          icon: Icon(
+            Icons.more_vert_sharp,
+            color: AppColors.menuColor,
           ),
-          subtitle: Text(
-            description,
-            style: TextStyles.title,
-          ),
-          trailing: Column(
-            children: [
-              const SizedBox(
-                height: 3,
+          itemBuilder: (context) => [
+            PopupMenuItem(
+              onTap: () {
+                setState(() {
+                  listType = QueryType.completedTasks;
+                });
+              },
+              value: QueryType.completedTasks,
+              child: Text(
+                "Complete",
+                style: TextStyles.title,
               ),
-              Text(
-                createdAt.toString(),
-                style: TextStyles.body1,
+            ),
+            PopupMenuItem(
+              onTap: () {
+                setState(() {
+                  listType = QueryType.incompleteTasks;
+                });
+              },
+              value: QueryType.incompleteTasks,
+              child: Text(
+                "inComplete ",
+                style: TextStyles.title,
               ),
-            ],
-          )),
+            ),
+            PopupMenuItem(
+              onTap: () {
+                setState(() {
+                  listType = QueryType.allTasks;
+                });
+              },
+              value: QueryType.allTasks,
+              child: Text(
+                "Clear Filter",
+                style: TextStyles.title,
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -359,7 +289,6 @@ class _HomePageState extends State<HomePage> {
     required BuildContext context,
     required Task task,
   }) {
-
     return (InkWell(
         onTap: () {
           _showDialog(context, task);
@@ -382,7 +311,6 @@ class _HomePageState extends State<HomePage> {
                   SvgPicture.asset(AppData.getIconDataString(task.dropDownValue)),
                 ],
               ),
-
               title: Text(task.title,
                   style: TextStyle(
                     color: Color(0XFF0C1A30),
@@ -412,6 +340,7 @@ class _HomePageState extends State<HomePage> {
             ))));
   }
 
+
   void _showDialog(BuildContext context, Task task) {
     // flutter defined function
     showModalBottomSheet(
@@ -428,7 +357,8 @@ class _HomePageState extends State<HomePage> {
                 height: 50,
                 child: ElevatedButton(
                   onPressed: () {
-                    _delete(context, task.id!);
+                    taskController.delete(task.id!);
+                    //_delete(context, task.id!);
                     if (mounted) Navigator.pop(context);
 
                     setState(() {});
@@ -472,11 +402,34 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  _delete(BuildContext context, int id) async {
-    await taskController.delete(id);
-    if (kDebugMode) {
-      print("item will be deleted successfully");
-    }
-    setState(() {});
-  }
+
 }
+
+
+
+
+
+// Future<void> _refreshTasks() async {
+//   await _taskController.getTasks(queryType);
+// }
+//
+// void setQueryType({required QueryType query}) {
+//   queryType = query;
+//   _refreshTasks();
+//   setState(() {});
+// }
+
+//
+// @override
+// void initState() {
+//   super.initState();
+//   _updateNoteList();
+// //  _delete(context, DatabaseHelper.instance.colId.length);
+//   taskController.databaseHelper.getLastTodoTask();
+// }
+//
+// final taskController = TasksController();
+//
+// _updateNoteList() {
+//   task = taskController.getAllTasks();
+// }

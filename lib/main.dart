@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'Screens/splash_screen.dart/splashScreen.dart';
+import 'my_todo/presentation/screens/splash_screen.dart/splashScreen.dart';
+
+
 
 void main() {
-  runApp(const ProviderScope(child: MyApp(),));
+  runApp(const MyApp(),);
 }
 
 class MyApp extends StatelessWidget {
@@ -12,9 +13,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return  const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
-    );
+      home: SplashScreen());
   }
 }

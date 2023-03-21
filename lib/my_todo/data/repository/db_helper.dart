@@ -1,13 +1,16 @@
+
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'package:path_provider/path_provider.dart';
+import 'package:todo_list_app/my_todo/data/enum/query_type.dart';
+import 'package:todo_list_app/my_todo/data/model/task.dart';
 
-import '../models/task.dart';
 
-enum QueryType { allTasks, completedTasks, incompleteTasks }
+
+
 
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._instance();

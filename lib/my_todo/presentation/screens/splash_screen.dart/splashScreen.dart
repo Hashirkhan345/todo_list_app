@@ -1,9 +1,12 @@
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:todo_list_app/utils/app_colors.dart';
+import 'package:todo_list_app/utils/text_styles.dart';
 
-import '../../utils/app_colors.dart';
-import '../../utils/text_styles.dart';
+
+
 import '../HomePage/home_page.dart';
 
 
@@ -21,7 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     Timer(
         const Duration(seconds: 3),
-            () => Navigator.pushReplacement(
+            () => Navigator.push(
             context, MaterialPageRoute(builder: (context) =>  const HomePage ())));
   }
 

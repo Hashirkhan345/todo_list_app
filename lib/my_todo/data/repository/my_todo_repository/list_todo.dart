@@ -1,18 +1,17 @@
 import 'package:flutter/foundation.dart';
-import 'package:todo_list_app/core/models/task.dart';
-
-import '../service/db_helper.dart';
-
-
+import 'package:todo_list_app/my_todo/data/enum/query_type.dart';
+import 'package:todo_list_app/my_todo/data/model/task.dart';
+import 'package:todo_list_app/my_todo/data/repository/db_helper.dart';
 
 class TasksController {
   final DatabaseHelper databaseHelper = DatabaseHelper.instance;
+
   Future<List<Task>> getTasks(QueryType listType) async {
-    if(listType == QueryType.completedTasks){
+    if (listType == QueryType.completedTasks) {
       return await getCompletedTasks();
-    }else if(listType == QueryType.incompleteTasks){
+    } else if (listType == QueryType.incompleteTasks) {
       return await getIncompleteTasks();
-    }else{
+    } else {
       return await getAllTasks();
     }
   }
@@ -20,7 +19,6 @@ class TasksController {
   Future<List<Task>> getAllTasks() async {
     final taskMapList = await databaseHelper.getRawTasks();
     final List<Task> tasks = [];
-
 
     try {
       for (var taskMap in taskMapList) {
@@ -66,6 +64,7 @@ class TasksController {
   Future<List<Task>> getCompletedTasks() async {
     final taskMapList = await databaseHelper.getRawTasks(queryType: QueryType.completedTasks);
     final List<Task> task = [];
+
     try {
       for (var taskMap in taskMapList) {
         task.add(Task.fromMap(taskMap));
@@ -85,6 +84,7 @@ class TasksController {
 
   Future<bool> insertTask({required Task newTask}) async {
     final result = await databaseHelper.insert(newTask);
+    // final result = await databaseHelper.insert(newTask);
     return result != 0;
   }
 
